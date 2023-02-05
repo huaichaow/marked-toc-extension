@@ -22,7 +22,7 @@ export default function markedTableOfContentsExtension() {
     start(src: string) {
       return src.match(/^\[TOC]\s*(\n|$)/i)?.index;
     },
-    tokenizer(this: any, src: string, tokens: any) {
+    tokenizer(src: string) {
       const match = /^\[TOC]\s*(\n|$)/i.exec(src);
       if (match) {
         const token = {
