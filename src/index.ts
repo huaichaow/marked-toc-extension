@@ -1,10 +1,13 @@
 import { marked } from 'marked';
 import Token = marked.Token;
+import { Heading } from './types';
 import { renderTableOfContent } from './renderTableOfContents';
+import { fixHeadingDepthFactory } from './fixHeadingDepthFactory';
 
 export default function markedTableOfContentsExtension() {
   let headings: Array<{ text: string; depth: number }> | null = null;
-  let cache: string;
+  let fixHeadingDepth: ((heading: Heading) => void) | null = null;
+  let tocCache: string;
 
   const walkTokens = (token: Token) => {
     const { type } = token;
@@ -12,6 +15,10 @@ export default function markedTableOfContentsExtension() {
       if (!headings) {
         headings = [];
       }
+      if (!fixHeadingDepth) {
+        fixHeadingDepth = fixHeadingDepthFactory();
+      }
+      fixHeadingDepth(token);
       headings.push(token);
     }
   };
@@ -34,11 +41,12 @@ export default function markedTableOfContentsExtension() {
     },
     renderer() {
       if (headings) {
-        cache = renderTableOfContent(headings) + '\n';
+        tocCache = renderTableOfContent(headings) + '\n';
         // clear headings for next run, to prevent headings cumulating and memory leak
         headings = null;
+        fixHeadingDepth = null;
       }
-      return cache;
+      return tocCache;
     }
   };
 
