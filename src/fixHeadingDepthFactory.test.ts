@@ -1,9 +1,6 @@
-import { Heading, Headings } from './types';
+import { Heading } from './types';
 import { fixHeadingDepthFactory } from './fixHeadingDepthFactory';
-
-function createHeadings(depths: Array<number>): Headings {
-  return depths.map((depth) => ({ text: `heading ${depth}`, depth }));
-}
+import { createHeadings } from './testHelper';
 
 let fixHeadingDepth: (heading: Heading) => void;
 

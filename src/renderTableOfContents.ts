@@ -1,4 +1,4 @@
-import { Heading, Headings } from './types';
+import { Heading, Headings, HeadingWithChapterNumber } from './types';
 import { fixHeadingDepthFactory } from './fixHeadingDepthFactory';
 
 function fixHeadingDepth(headings: Headings): Headings {
@@ -10,33 +10,38 @@ function fixHeadingDepth(headings: Headings): Headings {
 function renderTreeStructureHeadings(headings: Headings): string {
   const tokens: Array<string> = [];
 
-  function newItem(heading: Heading) {
-    tokens.push(`<li>${heading.text}</li>`);
+  function addTocItem(heading: Heading) {
+    const chapterNumber = (heading as HeadingWithChapterNumber).chapterNumber;
+    tokens.push(`<li>${chapterNumber} ${heading.text}</li>`);
   }
 
-  function openLevel(heading: Heading) {
+  function openLevel() {
     tokens.push(`<ul>`);
-    newItem(heading);
   }
 
-  function closeLevel() {
-    tokens.push(`</ul>`);
+  function closeLevel(count: number) {
+    Array(count)
+      .fill(0)
+      .forEach(() => {
+        tokens.push(`</ul>`);
+      });
   }
 
   headings.reduce((prev, next) => {
     const diff = next.depth - prev.depth;
     if (diff === 0) {
-      newItem(next);
+      addTocItem(next);
     } else if (diff > 0) {
-      openLevel(next);
+      openLevel();
+      addTocItem(next);
     } else {
-      Array(-diff).fill(0).forEach(closeLevel);
-      newItem(next);
+      closeLevel(-diff);
+      addTocItem(next);
     }
     return next;
   }, { text: '', depth: 0 });
 
-  Array(headings[headings.length - 1].depth).fill(0).forEach(closeLevel);
+  closeLevel(headings[headings.length - 1].depth);
 
   return tokens.join('');
 }

@@ -21,11 +21,11 @@ describe('marked-toc-extension', () => {
       `);
 
 		const expectedHtml = removeLeadingSpaces(`
-      <h1 id="toc">toc</h1>
-      <ul><li>toc</li><li>h1</li><ul><li>h2</li><ul><li>h3</li></ul></ul></ul>
-      <h1 id="h1">h1</h1>
-      <h2 id="h2">h2</h2>
-      <h3 id="h3">h3</h3>
+      <h1 id="toc">1 toc</h1>
+      <ul><li>1 toc</li><li>2 h1</li><ul><li>2.1 h2</li><ul><li>2.1.1 h3</li></ul></ul></ul>
+      <h1 id="h1">2 h1</h1>
+      <h2 id="h2">2.1 h2</h2>
+      <h3 id="h3">2.1.1 h3</h3>
       `);
 
 		expect(marked.parse(md)).toEqual(expectedHtml);
@@ -40,10 +40,10 @@ describe('marked-toc-extension', () => {
       `);
 
 		const expectedHtml = removeLeadingSpaces(`
-      <ul><li>l2</li><ul><li>l3</li></ul><li>l1</li></ul>
-      <h1 id="l2">l2</h1>
-      <h2 id="l3">l3</h2>
-      <h1 id="l1">l1</h1>
+      <ul><li>1 l2</li><ul><li>1.1 l3</li></ul><li>2 l1</li></ul>
+      <h1 id="l2">1 l2</h1>
+      <h2 id="l3">1.1 l3</h2>
+      <h1 id="l1">2 l1</h1>
       `);
 
 		expect(marked.parse(md)).toEqual(expectedHtml);
