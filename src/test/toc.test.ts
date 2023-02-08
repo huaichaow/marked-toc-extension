@@ -31,6 +31,28 @@ describe('marked-toc-extension', () => {
 		expect(marked.parse(md)).toEqual(expectedHtml);
 	});
 
+	test('should render the same result when called multiple times', () => {
+		const md = removeLeadingSpaces(`
+      [TOC]
+      # a
+      # b
+      # c
+      `);
+
+		const expectedHtml = removeLeadingSpaces(`
+      <ul><li>1 a</li><li>2 b</li><li>3 c</li></ul>
+      <h1 id="a">1 a</h1>
+      <h1 id="b">2 b</h1>
+      <h1 id="c">3 c</h1>
+      `);
+
+		// compile twice
+		marked.parse(md);
+		const result = marked.parse(md);
+
+		expect(result).toEqual(expectedHtml);
+	});
+
   test('should auto fix heading depth', () => {
 		const md = removeLeadingSpaces(`
       [TOC]
