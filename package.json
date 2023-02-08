@@ -7,7 +7,7 @@
     "lib/"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "rollup -c",
     "lint": "eslint .",
     "test": "jest",
     "prepare": "husky install"
@@ -26,6 +26,8 @@
     "eslint": "^8.33.0",
     "husky": "^8.0.3",
     "marked": "^4.2.12",
+    "rollup": "^3.14.0",
+    "rollup-plugin-ts": "^3.2.0",
     "semantic-release": "^20.1.0",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
