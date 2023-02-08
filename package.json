@@ -1,8 +1,9 @@
 {
   "name": "marked-toc-extension",
   "version": "1.1.0",
-  "description": "",
-  "main": "lib/index.js",
+  "description": "Table of Contents extension for marked",
+  "main": "lib/marked-toc-extension.js",
+	"module": "lib/marked-toc-extension.esm.js",
   "files": [
     "lib/"
   ],
@@ -12,8 +13,8 @@
     "test": "jest",
     "prepare": "husky install"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["markdown", "extension", "toc", "table of contents"],
+  "author": "Huaichao Wang(huaichao.wang@qq.com)",
   "license": "ISC",
   "devDependencies": {
     "@commitlint/cli": "^17.4.2",
