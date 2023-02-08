@@ -46,6 +46,16 @@ export default function markedTableOfContentsExtension(
     }
   };
 
+  function renderToc() {
+    if (headings) {
+      tocCache = renderTableOfContent(headings, className) + '\n';
+      // clear headings for next run, to prevent headings cumulating and memory leak
+      headings = null;
+      fixHeadingDepth = null;
+      numberingHeading = null;
+    }
+  }
+
   const tableOfContentsExtension = {
     name: 'toc',
     level: 'block' as const,
@@ -63,19 +73,16 @@ export default function markedTableOfContentsExtension(
       }
     },
     renderer() {
-      if (headings) {
-        tocCache = renderTableOfContent(headings, className) + '\n';
-        // clear headings for next run, to prevent headings cumulating and memory leak
-        headings = null;
-        fixHeadingDepth = null;
-        numberingHeading = null;
-      }
+      renderToc();
       return tocCache;
     }
   };
 
   const rendererHeadingWithChapterNumber = {
     heading(this: Renderer, text: string, level: number, raw: string, slugger: Slugger) {
+      // fixme: this is to ensure clean of 'headings' when `[toc]' not present in markdown input
+      renderToc();
+
       const chapterNumber = chapterNumbers.shift();
 
       const id = this.options.headerIds

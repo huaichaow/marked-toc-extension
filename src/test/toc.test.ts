@@ -90,4 +90,37 @@ describe('marked-toc-extension', () => {
 
     expect(marked.parse(md)).toEqual(expectedHtml);
   });
+
+  test('should generate chapter number without toc', () => {
+    const md = removeLeadingSpaces(`
+      ## l2
+      ### l3
+      # l1
+      `);
+
+    const expectedHtml = removeLeadingSpaces(`
+      <h1 id="l2">1 l2</h1>
+      <h2 id="l3">1.1 l3</h2>
+      <h1 id="l1">2 l1</h1>
+      `);
+
+    expect(marked.parse(md)).toEqual(expectedHtml);
+  });
+
+  test('should generate the same chapter number without toc when call multiple times', () => {
+    const md = removeLeadingSpaces(`
+      ## l2
+      ### l3
+      # l1
+      `);
+
+    const expectedHtml = removeLeadingSpaces(`
+      <h1 id="l2">1 l2</h1>
+      <h2 id="l3">1.1 l3</h2>
+      <h1 id="l1">2 l1</h1>
+      `);
+
+    expect(marked.parse(md)).toEqual(expectedHtml);
+    expect(marked.parse(md)).toEqual(expectedHtml);
+  });
 });
