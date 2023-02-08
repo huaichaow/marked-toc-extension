@@ -1,4 +1,4 @@
-import { Heading, HeadingWithChapterNumber } from './types';
+import { Heading, HeadingWithChapterNumber, RenderChapterNumberFn } from './types';
 
 /**
  * It assumes that the depth of tokens feed into the returned `numberingHeading` function
@@ -6,7 +6,10 @@ import { Heading, HeadingWithChapterNumber } from './types';
  * it makes no sense to numbering these headings.
  */
 
-export function numberingHeadingFactory() {
+export function numberingHeadingFactory(
+  renderChapterNumberTOC?: RenderChapterNumberFn,
+  renderChapterNumberHeading?: RenderChapterNumberFn,
+) {
   const chapterNumbers: Array<number> = [];
   let prevDepth = 0;
 
@@ -42,6 +45,14 @@ export function numberingHeadingFactory() {
     prevDepth = depth;
 
     // append chapter number to token
-    (heading as unknown as HeadingWithChapterNumber).chapterNumber = getChapterNumber();
+    (heading as unknown as HeadingWithChapterNumber).chapterNumberTOC =
+      renderChapterNumberTOC
+        ? renderChapterNumberTOC([...chapterNumbers])
+        : getChapterNumber();
+
+    (heading as unknown as HeadingWithChapterNumber).chapterNumberHeading =
+      renderChapterNumberHeading
+        ? renderChapterNumberHeading([...chapterNumbers])
+        : getChapterNumber();
   };
 }

@@ -1,10 +1,18 @@
 export type Heading = {
-  text: string;
-  depth: number;
+	text: string;
+	depth: number;
 }
 
 export type HeadingWithChapterNumber = Heading & {
-  chapterNumber: string; // dot separated string, e.g., `1.2.3`
+	chapterNumberTOC: string;
+	chapterNumberHeading: string;
 }
 
 export type Headings = Array<Heading>;
+
+export type RenderChapterNumberFn = (numbers: Array<number>) => string;
+
+export type MarkedTableOfContentsExtensionOptions = {
+	renderChapterNumberTOC?: RenderChapterNumberFn;
+  renderChapterNumberHeading?: RenderChapterNumberFn;
+};

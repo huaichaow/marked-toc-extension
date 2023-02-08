@@ -1,11 +1,19 @@
 import { marked, Renderer, Slugger } from 'marked';
 import Token = marked.Token;
-import { Heading, HeadingWithChapterNumber } from './types';
+import {
+	Heading,
+	HeadingWithChapterNumber,
+	MarkedTableOfContentsExtensionOptions,
+} from './types';
 import { renderTableOfContent } from './renderTableOfContents';
 import { fixHeadingDepthFactory } from './fixHeadingDepthFactory';
 import { numberingHeadingFactory } from './numberingHeadingFactory';
 
-export default function markedTableOfContentsExtension() {
+export default function markedTableOfContentsExtension(
+	options?: MarkedTableOfContentsExtensionOptions,
+) {
+	const { renderChapterNumberHeading, renderChapterNumberTOC } = options || {};
+
   let headings: Array<{ text: string; depth: number }> | null = null;
   let fixHeadingDepth: ((heading: Heading) => void) | null = null;
   let numberingHeading: ((heading: Heading) => void) | null = null;
@@ -26,11 +34,14 @@ export default function markedTableOfContentsExtension() {
         fixHeadingDepth = fixHeadingDepthFactory();
       }
       if (!numberingHeading) {
-        numberingHeading = numberingHeadingFactory();
+        numberingHeading = numberingHeadingFactory(
+          renderChapterNumberTOC,
+          renderChapterNumberHeading,
+        );
       }
       fixHeadingDepth(token);
       numberingHeading(token);
-      chapterNumbers.push((token as unknown as HeadingWithChapterNumber).chapterNumber);
+      chapterNumbers.push((token as unknown as HeadingWithChapterNumber).chapterNumberHeading);
       headings.push(token);
     }
   };
