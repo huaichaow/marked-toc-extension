@@ -1,4 +1,9 @@
-import { Heading, Headings, HeadingWithChapterNumber } from './types';
+import {
+  Heading,
+  Headings,
+  HeadingWithChapterNumber,
+  RenderTableOfContentsOptions,
+} from './types';
 import { fixHeadingDepthFactory } from './fixHeadingDepthFactory';
 
 function fixHeadingDepth(headings: Headings): Headings {
@@ -7,13 +12,34 @@ function fixHeadingDepth(headings: Headings): Headings {
   return headings;
 }
 
-function renderTreeStructureHeadings(headings: Headings, className?: string): string {
+function createHeadingIdFactory(options: RenderTableOfContentsOptions) {
+  const { headerPrefix, headerIds, slug } = options;
+
+  return headerIds && slug
+    // fixme: align with heading rendering implementation in marked
+    ? (heading: Heading) => headerPrefix + slug(heading.text)
+    : () => null;
+}
+
+function renderTreeStructureHeadings(
+  headings: Headings,
+  options: RenderTableOfContentsOptions,
+): string {
+  const { className } = options;
   let outermost = true;
   const tokens: Array<string> = [];
 
+  const createHeadingId = createHeadingIdFactory(options);
+
   function addTocItem(heading: Heading) {
     const chapterNumber = (heading as HeadingWithChapterNumber).chapterNumberTOC;
-    tokens.push(`<li>${chapterNumber} ${heading.text}</li>`);
+    const headingId = createHeadingId(heading);
+    const text = `${chapterNumber} ${heading.text}`;
+    if (headingId) {
+      tokens.push(`<li><a href="#${headingId}">${text}</a></li>`);
+    } else {
+      tokens.push(`<li>${text}</li>`);
+    }
   }
 
   function openLevel() {
@@ -52,6 +78,9 @@ function renderTreeStructureHeadings(headings: Headings, className?: string): st
   return tokens.join('');
 }
 
-export function renderTableOfContent(headings: Headings, className?: string) {
-  return renderTreeStructureHeadings(fixHeadingDepth(headings), className);
+export function renderTableOfContent(
+  headings: Headings,
+  options: RenderTableOfContentsOptions,
+): string {
+  return renderTreeStructureHeadings(fixHeadingDepth(headings), options);
 }

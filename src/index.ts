@@ -1,18 +1,19 @@
-import { marked, Renderer, Slugger } from 'marked';
+import { marked, Parser, Renderer, Slugger } from 'marked';
 import Token = marked.Token;
 import {
-	Heading,
-	HeadingWithChapterNumber,
-	MarkedTableOfContentsExtensionOptions,
+  Heading,
+  HeadingWithChapterNumber,
+  MarkedTableOfContentsExtensionOptions,
 } from './types';
 import { renderTableOfContent } from './renderTableOfContents';
 import { fixHeadingDepthFactory } from './fixHeadingDepthFactory';
 import { numberingHeadingFactory } from './numberingHeadingFactory';
+import MarkedOptions = marked.MarkedOptions;
 
 export default function markedTableOfContentsExtension(
-	options?: MarkedTableOfContentsExtensionOptions,
+  options?: MarkedTableOfContentsExtensionOptions,
 ) {
-	const { className, renderChapterNumber } = options || {};
+  const { className, renderChapterNumber } = options || {};
 
   let headings: Array<{ text: string; depth: number }> | null = null;
   let fixHeadingDepth: ((heading: Heading) => void) | null = null;
@@ -20,6 +21,8 @@ export default function markedTableOfContentsExtension(
   // save for use in `rendererHeadingWithChapterNumber`
   let chapterNumbers: Array<string> = [];
   let tocCache: string;
+
+  let slug: ((value: string) => string) | null;
 
   const walkTokens = (token: Token) => {
     const { type } = token;
@@ -29,6 +32,11 @@ export default function markedTableOfContentsExtension(
       if (!headings) {
         headings = [];
         chapterNumbers = [];
+      }
+      if (!slug) {
+        // fixme: this may break in the future as marked might accept customize Slugger in the future
+        const slugger = new Slugger();
+        slug = slugger.slug.bind(slugger);
       }
       if (!fixHeadingDepth) {
         fixHeadingDepth = fixHeadingDepthFactory();
@@ -43,13 +51,20 @@ export default function markedTableOfContentsExtension(
     }
   };
 
-  function renderToc() {
+  function renderToc(markedOption: MarkedOptions) {
     if (headings) {
-      tocCache = renderTableOfContent(headings, className) + '\n';
+      const { headerPrefix, headerIds } = markedOption;
+      tocCache = renderTableOfContent(headings, {
+        className,
+        headerIds,
+        headerPrefix,
+        slug: slug || undefined,
+      }) + '\n';
       // clear headings for next run, to prevent headings cumulating and memory leak
       headings = null;
       fixHeadingDepth = null;
       numberingHeading = null;
+      slug = null;
     }
   }
 
@@ -69,8 +84,8 @@ export default function markedTableOfContentsExtension(
         return token;
       }
     },
-    renderer() {
-      renderToc();
+    renderer(this: { parser: Parser }) {
+      renderToc(this.parser.options);
       return tocCache;
     }
   };
@@ -78,12 +93,14 @@ export default function markedTableOfContentsExtension(
   const rendererHeadingWithChapterNumber = {
     heading(this: Renderer, text: string, level: number, raw: string, slugger: Slugger) {
       // fixme: this is to ensure clean of 'headings' when `[toc]' not present in markdown input
-      renderToc();
+      renderToc(this.options);
 
       const chapterNumber = chapterNumbers.shift();
 
       const id = this.options.headerIds
-        ? this.options.headerPrefix + slugger.slug(raw)
+        // todo: use the global 'slug' defined in this file to align with
+        //  the usage in renderTableOfContent
+        ? this.options.headerPrefix + slugger.slug(text)
         : null;
 
       const idAttr = id ? ` id="${id}"` : '';

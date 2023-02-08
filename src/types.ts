@@ -16,3 +16,10 @@ export type MarkedTableOfContentsExtensionOptions = {
   className?: string;
 	renderChapterNumber?: RenderChapterNumberFn;
 };
+
+export type RenderTableOfContentsOptions = {
+  className?: string;
+  headerIds?: boolean;
+  headerPrefix?: string;
+  slug?: (value: string) => string;
+};
