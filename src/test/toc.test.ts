@@ -70,4 +70,24 @@ describe('marked-toc-extension', () => {
 
     expect(marked.parse(md)).toEqual(expectedHtml);
   });
+
+  test('should be able to render toc in multiple places', () => {
+    const md = removeLeadingSpaces(`
+      ## l2
+      [TOC]
+      ### l3
+      [TOC]
+      # l1
+      `);
+
+    const expectedHtml = removeLeadingSpaces(`
+      <h1 id="l2">1 l2</h1>
+      <ul><li>1 l2</li><ul><li>1.1 l3</li></ul><li>2 l1</li></ul>
+      <h2 id="l3">1.1 l3</h2>
+      <ul><li>1 l2</li><ul><li>1.1 l3</li></ul><li>2 l1</li></ul>
+      <h1 id="l1">2 l1</h1>
+      `);
+
+    expect(marked.parse(md)).toEqual(expectedHtml);
+  });
 });
