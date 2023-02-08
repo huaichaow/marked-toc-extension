@@ -8,7 +8,6 @@ module.exports = {
 				assets: [
 					{
 						path: 'lib/**',
-						label: 'bundle files',
 					},
 				],
 			}],
