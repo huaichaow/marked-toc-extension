@@ -8,8 +8,7 @@ import markedToc from '..';
 
 marked.use(markedToc({
   className: 'toc',
-  renderChapterNumberTOC: (numbers) => numbers.join("--"),
-  renderChapterNumberHeading: (numbers) => numbers.join("++"),
+  renderChapterNumber: (numbers, kind) => numbers.join(kind === 'toc' ? '--' : '++'),
 }));
 
 function removeLeadingSpaces(html: string) {

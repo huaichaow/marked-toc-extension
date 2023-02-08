@@ -52,8 +52,7 @@ describe('numberingHeadingFactory', () => {
       const headings = createHeadings(receivedDepths);
 
       numberingHeading = numberingHeadingFactory(
-        (numbers: Array<number>) => numbers.join("-"),
-        (numbers: Array<number>) => numbers.join("|"),
+        (numbers: Array<number>, kind) => numbers.join(kind === 'toc' ? '-' : '|'),
       );
 
       headings.forEach((heading) => numberingHeading(heading));

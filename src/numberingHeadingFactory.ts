@@ -6,10 +6,7 @@ import { Heading, HeadingWithChapterNumber, RenderChapterNumberFn } from './type
  * it makes no sense to numbering these headings.
  */
 
-export function numberingHeadingFactory(
-  renderChapterNumberTOC?: RenderChapterNumberFn,
-  renderChapterNumberHeading?: RenderChapterNumberFn,
-) {
+export function numberingHeadingFactory(renderChapterNumber?: RenderChapterNumberFn) {
   const chapterNumbers: Array<number> = [];
   let prevDepth = 0;
 
@@ -46,13 +43,13 @@ export function numberingHeadingFactory(
 
     // append chapter number to token
     (heading as unknown as HeadingWithChapterNumber).chapterNumberTOC =
-      renderChapterNumberTOC
-        ? renderChapterNumberTOC([...chapterNumbers])
+      renderChapterNumber
+        ? renderChapterNumber([...chapterNumbers], 'toc')
         : getChapterNumber();
 
     (heading as unknown as HeadingWithChapterNumber).chapterNumberHeading =
-      renderChapterNumberHeading
-        ? renderChapterNumberHeading([...chapterNumbers])
+      renderChapterNumber
+        ? renderChapterNumber([...chapterNumbers], 'heading')
         : getChapterNumber();
   };
 }

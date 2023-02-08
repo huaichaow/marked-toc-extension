@@ -10,10 +10,9 @@ export type HeadingWithChapterNumber = Heading & {
 
 export type Headings = Array<Heading>;
 
-export type RenderChapterNumberFn = (numbers: Array<number>) => string;
+export type RenderChapterNumberFn = (numbers: Array<number>, kind: 'toc' | 'heading') => string;
 
 export type MarkedTableOfContentsExtensionOptions = {
   className?: string;
-	renderChapterNumberTOC?: RenderChapterNumberFn;
-  renderChapterNumberHeading?: RenderChapterNumberFn;
+	renderChapterNumber?: RenderChapterNumberFn;
 };
