@@ -9,8 +9,10 @@
   ],
   "scripts": {
     "build": "rollup -c",
+		"clean": "rm -rf lib",
     "lint": "eslint .",
     "test": "jest",
+		"prepack": "npm run clean && npm run build",
     "prepare": "husky install"
   },
   "keywords": [
