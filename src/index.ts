@@ -12,7 +12,7 @@ import { numberingHeadingFactory } from './numberingHeadingFactory';
 export default function markedTableOfContentsExtension(
 	options?: MarkedTableOfContentsExtensionOptions,
 ) {
-	const { renderChapterNumberHeading, renderChapterNumberTOC } = options || {};
+	const { className, renderChapterNumberHeading, renderChapterNumberTOC } = options || {};
 
   let headings: Array<{ text: string; depth: number }> | null = null;
   let fixHeadingDepth: ((heading: Heading) => void) | null = null;
@@ -64,7 +64,7 @@ export default function markedTableOfContentsExtension(
     },
     renderer() {
       if (headings) {
-        tocCache = renderTableOfContent(headings) + '\n';
+        tocCache = renderTableOfContent(headings, className) + '\n';
         // clear headings for next run, to prevent headings cumulating and memory leak
         headings = null;
         fixHeadingDepth = null;

@@ -13,6 +13,7 @@ export type Headings = Array<Heading>;
 export type RenderChapterNumberFn = (numbers: Array<number>) => string;
 
 export type MarkedTableOfContentsExtensionOptions = {
+  className?: string;
 	renderChapterNumberTOC?: RenderChapterNumberFn;
   renderChapterNumberHeading?: RenderChapterNumberFn;
 };

@@ -7,7 +7,8 @@ function fixHeadingDepth(headings: Headings): Headings {
   return headings;
 }
 
-function renderTreeStructureHeadings(headings: Headings): string {
+function renderTreeStructureHeadings(headings: Headings, className?: string): string {
+  let outermost = true;
   const tokens: Array<string> = [];
 
   function addTocItem(heading: Heading) {
@@ -16,7 +17,12 @@ function renderTreeStructureHeadings(headings: Headings): string {
   }
 
   function openLevel() {
-    tokens.push(`<ul>`);
+    if (outermost && className) {
+      outermost = false;
+      tokens.push(`<ul class="${className}">`);
+    } else {
+      tokens.push(`<ul>`);
+    }
   }
 
   function closeLevel(count: number) {
@@ -46,6 +52,6 @@ function renderTreeStructureHeadings(headings: Headings): string {
   return tokens.join('');
 }
 
-export function renderTableOfContent(headings: Headings) {
-  return renderTreeStructureHeadings(fixHeadingDepth(headings));
+export function renderTableOfContent(headings: Headings, className?: string) {
+  return renderTreeStructureHeadings(fixHeadingDepth(headings), className);
 }
