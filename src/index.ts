@@ -66,7 +66,13 @@ export default function markedTableOfContentsExtension(
   };
 
   const rendererHeadingWithChapterNumber = {
-    heading(this: Renderer, text: string, level: number, raw: string, slugger: Slugger) {
+    heading(
+      this: Renderer,
+      text: string,
+      level: 1 | 2 | 3 | 4 | 5 | 6,
+      raw: string,
+      slugger: Slugger,
+    ) {
       const chapterNumber = chapterNumbers.shift();
 
       const id = this.options.headerIds
@@ -83,8 +89,12 @@ export default function markedTableOfContentsExtension(
     if (!fixHeadingDepth) {
       fixHeadingDepth = fixHeadingDepthFactory();
     }
-    if (!numberingHeading) {
-      numberingHeading = numberingHeadingFactory(renderChapterNumber);
+    if (!numberingHeading && renderChapterNumber) {
+      numberingHeading = numberingHeadingFactory(
+        renderChapterNumber === true
+          ? undefined
+          : renderChapterNumber
+      );
     }
   }
 
@@ -111,6 +121,6 @@ export default function markedTableOfContentsExtension(
     hooks,
     extensions: [tableOfContentsExtension],
     walkTokens,
-    renderer: rendererHeadingWithChapterNumber,
+    renderer: renderChapterNumber ? rendererHeadingWithChapterNumber : undefined,
   };
 }

@@ -33,7 +33,9 @@ function renderTreeStructureHeadings(
   function addTocItem(heading: Heading) {
     const chapterNumber = (heading as HeadingWithChapterNumber).chapterNumberTOC;
     const headingId = createHeadingId(heading);
-    const text = `${chapterNumber} ${heading.text}`;
+    const text = chapterNumber === undefined
+      ? heading.text
+      : `${chapterNumber} ${heading.text}`;
     if (headingId) {
       tokens.push(`<li><a href="#${headingId}">${text}</a></li>`);
     } else {

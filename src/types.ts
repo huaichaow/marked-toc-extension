@@ -16,7 +16,7 @@ export type RenderChapterNumberFn = (numbers: Array<number>, kind: 'toc' | 'head
 
 export type MarkedTableOfContentsExtensionOptions = {
   className?: string;
-	renderChapterNumber?: RenderChapterNumberFn;
+	renderChapterNumber?: RenderChapterNumberFn | true;
 };
 
 export type RenderTableOfContentsOptions = {
