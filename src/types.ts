@@ -1,3 +1,5 @@
+import { Slugger } from 'marked';
+
 export type Heading = {
 	text: string;
 	depth: number;
@@ -21,5 +23,5 @@ export type RenderTableOfContentsOptions = {
   className?: string;
   headerIds?: boolean;
   headerPrefix?: string;
-  slug?: (value: string) => string;
+  slugger?: Slugger;
 };

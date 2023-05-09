@@ -15,56 +15,32 @@ export default function markedTableOfContentsExtension(
 ) {
   const { className, renderChapterNumber } = options || {};
 
-  let headings: Array<{ text: string; depth: number }> | null = null;
+  let headings: Array<{ text: string; depth: number }> = [];
   let fixHeadingDepth: ((heading: Heading) => void) | null = null;
   let numberingHeading: ((heading: Heading) => void) | null = null;
   // save for use in `rendererHeadingWithChapterNumber`
   let chapterNumbers: Array<string> = [];
-  let tocCache: string;
-
-  let slug: ((value: string) => string) | null;
+  let tocCache: string | null = null;
 
   const walkTokens = (token: Token) => {
     const { type } = token;
     if (type === 'heading') {
-      // todo: add PR to `marked` and add hooks to use here for initializing and clean up,
-      //  e.g., `beforeParse`, `beforeWalkTokens`
-      if (!headings) {
-        headings = [];
-        chapterNumbers = [];
-      }
-      if (!slug) {
-        // fixme: this may break in the future as marked might accept customize Slugger in the future
-        const slugger = new Slugger();
-        slug = slugger.slug.bind(slugger);
-      }
-      if (!fixHeadingDepth) {
-        fixHeadingDepth = fixHeadingDepthFactory();
-      }
-      if (!numberingHeading) {
-        numberingHeading = numberingHeadingFactory(renderChapterNumber);
-      }
-      fixHeadingDepth(token);
-      numberingHeading(token);
+      fixHeadingDepth?.(token);
+      numberingHeading?.(token);
       chapterNumbers.push((token as unknown as HeadingWithChapterNumber).chapterNumberHeading);
       headings.push(token);
     }
   };
 
   function renderToc(markedOption: MarkedOptions) {
-    if (headings) {
+    if (headings.length && !tocCache) {
       const { headerPrefix, headerIds } = markedOption;
       tocCache = renderTableOfContent(headings, {
         className,
         headerIds,
         headerPrefix,
-        slug: slug || undefined,
+        slugger: new Slugger(),
       }) + '\n';
-      // clear headings for next run, to prevent headings cumulating and memory leak
-      headings = null;
-      fixHeadingDepth = null;
-      numberingHeading = null;
-      slug = null;
     }
   }
 
@@ -77,11 +53,10 @@ export default function markedTableOfContentsExtension(
     tokenizer(src: string) {
       const match = /^\[TOC]\s*(\n|$)/i.exec(src);
       if (match) {
-        const token = {
+        return {
           type: 'toc',
           raw: match[0],
         };
-        return token;
       }
     },
     renderer(this: { parser: Parser }) {
@@ -92,14 +67,9 @@ export default function markedTableOfContentsExtension(
 
   const rendererHeadingWithChapterNumber = {
     heading(this: Renderer, text: string, level: number, raw: string, slugger: Slugger) {
-      // fixme: this is to ensure clean of 'headings' when `[toc]' not present in markdown input
-      renderToc(this.options);
-
       const chapterNumber = chapterNumbers.shift();
 
       const id = this.options.headerIds
-        // todo: use the global 'slug' defined in this file to align with
-        //  the usage in renderTableOfContent
         ? this.options.headerPrefix + slugger.slug(text)
         : null;
 
@@ -109,7 +79,36 @@ export default function markedTableOfContentsExtension(
     }
   };
 
+  function init() {
+    if (!fixHeadingDepth) {
+      fixHeadingDepth = fixHeadingDepthFactory();
+    }
+    if (!numberingHeading) {
+      numberingHeading = numberingHeadingFactory(renderChapterNumber);
+    }
+  }
+
+  function cleanUp() {
+    headings = [];
+    chapterNumbers = [];
+    fixHeadingDepth = null;
+    numberingHeading = null;
+    tocCache = null;
+  }
+
+  const hooks = {
+    preprocess: (markdown: string) => {
+      init();
+      return markdown;
+    },
+    postprocess: (html: string) => {
+      cleanUp();
+      return html;
+    },
+  };
+
   return {
+    hooks,
     extensions: [tableOfContentsExtension],
     walkTokens,
     renderer: rendererHeadingWithChapterNumber,

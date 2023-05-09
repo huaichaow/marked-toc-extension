@@ -11,6 +11,24 @@ function removeLeadingSpaces(html: string) {
 }
 
 describe('marked-toc-extension', () => {
+  test('should work normally without toc', () => {
+    const md = removeLeadingSpaces(`
+      # toc
+      # h1
+      ## h2
+      ### h3
+      `);
+
+    const expectedHtml = removeLeadingSpaces(`
+      <h1 id="toc">1 toc</h1>
+      <h1 id="h1">2 h1</h1>
+      <h2 id="h2">2.1 h2</h2>
+      <h3 id="h3">2.1.1 h3</h3>
+      `);
+
+    expect(marked.parse(md)).toEqual(expectedHtml);
+  });
+
 	test('should render toc', () => {
 		const md = removeLeadingSpaces(`
       # toc

@@ -13,11 +13,10 @@ function fixHeadingDepth(headings: Headings): Headings {
 }
 
 function createHeadingIdFactory(options: RenderTableOfContentsOptions) {
-  const { headerPrefix, headerIds, slug } = options;
+  const { headerPrefix, headerIds, slugger } = options;
 
-  return headerIds && slug
-    // fixme: align with heading rendering implementation in marked
-    ? (heading: Heading) => headerPrefix + slug(heading.text)
+  return headerIds && slugger
+    ? (heading: Heading) => headerPrefix + slugger.slug(heading.text)
     : () => null;
 }
 
