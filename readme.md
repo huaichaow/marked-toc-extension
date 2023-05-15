@@ -29,19 +29,19 @@ marked.parse(`
 ```
 compiled to below(formatted for better readability):
 ```
-<ul>
-    <li><a href="#a">a</a></li>
-    <ul>
-        <li><a href="#b">b</a></li>
+<ul class="toc-list">
+  <li class="toc-item"><a href="#a">a</a></li>
+  <ul class="toc-list">
+    <li class="toc-item"><a href="#b">b</a></li>
+  </ul>
+  <li class="toc-item"><a href="#c">c</a></li>
+  <li class="toc-item"><a href="#d">d</a></li>
+  <ul class="toc-list">
+    <li class="toc-item"><a href="#e">e</a></li>
+    <ul class="toc-list">
+      <li class="toc-item"><a href="#f">f</a></li>
     </ul>
-    <li><a href="#c">c</a></li>
-    <li><a href="#d">d</a></li>
-    <ul>
-        <li><a href="#e">e</a></li>
-        <ul>
-            <li><a href="#f">f</a></li>
-        </ul>
-    </ul>
+  </ul>
 </ul>
 <h1 id="a">a</h1>
 <h2 id="b">b</h2>
@@ -79,17 +79,17 @@ compiled to below(formatted for better readability):
 
 ```
 <h1 id="a">1 a</h1>
-<ul class="toc">
-    <li><a href="#a">1 a</a></li>
-    <ul>
-        <li><a href="#b">1-1 b</a></li>
-        <li><a href="#c">1-2 c</a></li>
-        <ul>
-            <li><a href="#d">1-2-1 d</a></li>
-        </ul>
+<ul class="toc-list toc">
+  <li class="toc-item"><a href="#a">1 a</a></li>
+  <ul class="toc-list">
+    <li class="toc-item"><a href="#b">1-1 b</a></li>
+    <li class="toc-item"><a href="#c">1-2 c</a></li>
+    <ul class="toc-list">
+      <li class="toc-item"><a href="#d">1-2-1 d</a></li>
     </ul>
-    <li><a href="#e">2 e</a></li>
-    <li><a href="#f">3 f</a></li>
+  </ul>
+  <li class="toc-item"><a href="#e">2 e</a></li>
+  <li class="toc-item"><a href="#f">3 f</a></li>
 </ul>
 <h2 id="b">1+1 b</h2>
 <h2 id="c">1+2 c</h2>
@@ -107,13 +107,23 @@ export type RenderChapterNumberFn = (numbers: number[], kind: 'toc' | 'heading')
 
 export type MarkedTableOfContentsExtensionOptions = {
   className?: string;
-	renderChapterNumber?: RenderChapterNumberFn | true;
+  classNamePrefix?: string;
+  renderChapterNumber?: RenderChapterNumberFn | true;
 };
 ```
 
 **className**
 
 `class` attribute value to set to the `Table of contents` root element.
+
+**classNamePrefix**
+
+every `<ul>` and `<li>` in TOC output will be assigned a class name prefixed
+with this value, by default the value is `toc-`, could be changed to
+anything as long as the result is a valid class name, e.g., `x-`.
+
+* for `<ul>` the class name is `<prefix>list`, e.g., `toc-list`, `x-list`
+* for `<li>` the class name is `<prefix>item`, e.g., `toc-item`, `x-item`
 
 **renderChapterNumber**
 
