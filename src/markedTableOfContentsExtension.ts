@@ -13,7 +13,7 @@ import MarkedOptions = marked.MarkedOptions;
 export default function markedTableOfContentsExtension(
   options?: MarkedTableOfContentsExtensionOptions,
 ) {
-  const { className, renderChapterNumber } = options || {};
+  const { className, renderChapterNumber, classNamePrefix } = options || {};
 
   let headings: Array<{ text: string; depth: number }> = [];
   let fixHeadingDepth: ((heading: Heading) => void) | null = null;
@@ -37,6 +37,7 @@ export default function markedTableOfContentsExtension(
       const { headerPrefix, headerIds } = markedOption;
       tocCache = renderTableOfContent(headings, {
         className,
+        classNamePrefix,
         headerIds,
         headerPrefix,
         slugger: new Slugger(),

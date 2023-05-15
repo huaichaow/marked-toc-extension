@@ -6,6 +6,10 @@ import {
 } from './types';
 import { fixHeadingDepthFactory } from './fixHeadingDepthFactory';
 
+const TOC_LIST_CLASS = 'list';
+const TOC_ITEM_CLASS = 'item';
+const SPACE = ' ';
+
 function fixHeadingDepth(headings: Headings): Headings {
   const fixHeadingDepth = fixHeadingDepthFactory();
   headings.forEach((heading) => fixHeadingDepth(heading));
@@ -24,9 +28,13 @@ function renderTreeStructureHeadings(
   headings: Headings,
   options: RenderTableOfContentsOptions,
 ): string {
-  const { className } = options;
-  let outermost = true;
+  const { className, classNamePrefix = 'toc-' } = options;
+
+  const tocListClass = `${classNamePrefix}${TOC_LIST_CLASS}`;
+  const tocItemClass = `${classNamePrefix}${TOC_ITEM_CLASS}`;
   const tokens: Array<string> = [];
+
+  let outermost = true;
 
   const createHeadingId = createHeadingIdFactory(options);
 
@@ -36,20 +44,27 @@ function renderTreeStructureHeadings(
     const text = chapterNumber === undefined
       ? heading.text
       : `${chapterNumber} ${heading.text}`;
-    if (headingId) {
-      tokens.push(`<li><a href="#${headingId}">${text}</a></li>`);
-    } else {
-      tokens.push(`<li>${text}</li>`);
-    }
+
+    tokens.push(...createItem(text, headingId));
+  }
+
+  function createItem(text: string, headingId: string | null) {
+    const components: Array<string> = [];
+    components.push(`<li class="${tocItemClass}">`);
+    components.push(headingId ? `<a href="#${headingId}">${text}</a>` : text);
+    components.push(`</li>`);
+    return components;
   }
 
   function openLevel() {
+    const classNames = [tocListClass];
+
     if (outermost && className) {
       outermost = false;
-      tokens.push(`<ul class="${className}">`);
-    } else {
-      tokens.push(`<ul>`);
+      classNames.push(className);
     }
+
+    tokens.push(`<ul class="${classNames.join(SPACE)}">`);
   }
 
   function closeLevel(count: number) {
