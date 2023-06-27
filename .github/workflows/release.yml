@@ -1,7 +1,10 @@
 # reference: https://semantic-release.gitbook.io/semantic-release/recipes/ci-configurations/github-actions
 
 name: Release
-on: [ workflow_dispatch ]
+on:
+  workflow_dispatch:
+    branches:
+      - 'release/**'
 
 permissions:
   contents: read # for checkout
