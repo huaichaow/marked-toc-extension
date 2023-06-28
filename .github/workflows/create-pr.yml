@@ -1,17 +1,14 @@
 # reference: https://semantic-release.gitbook.io/semantic-release/recipes/ci-configurations/github-actions
 
-name: Release
-on:
-  workflow_dispatch:
-    branches:
-      - 'release/**'
+name: Create PR
+on: [ workflow_dispatch ]
 
 permissions:
   contents: read # for checkout
 
 jobs:
-  release:
-    name: Release
+  create-pr:
+    name: Create PR
     runs-on: ubuntu-latest
     permissions:
       contents: write # to be able to publish a GitHub release
@@ -24,34 +21,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "lts/*"
-
-      - name: Install dependencies
-        run: npm clean-install
-
-      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
-        run: npm audit signatures
-
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
-
       # reference:
       #   * https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#create-a-pull-request
       #   * https://docs.github.com/en/rest/guides/getting-started-with-the-rest-api?apiVersion=2022-11-28#authentication-example-for-github-actions
-      #
+      #   * https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows
       # grant PR permission to GitHub Actions: `Allow GitHub Actions to create and approve pull requests`
       #   * https://github.com/huaichaow/marked-toc-extension/settings/actions
       - name: Create PR to main branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pr_number=$(gh api \
+          echo "Creating PR"
+
+          pr_number="$(gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -59,5 +41,13 @@ jobs:
             -f title='Amazing new feature' \
             -f body='Please pull these awesome changes in!' \
             -f head='release/main' \
-            -f base='main' | jq '.number')
-          echo ${pr_number}
+            -f base='main' --jq '.number')"
+
+          echo "Merging PR ${pr_number}"
+
+          gh api \
+            --method PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/huaichaow/marked-toc-extension/pulls/${pr_number}/merge \
+            -f merge_method=rebase
