@@ -39,6 +39,6 @@ jobs:
             -f title='Amazing new feature' \
             -f body='Please pull these awesome changes in!' \
             -f head='release/main' \
-            -f base='main' | --jq '.number')"
+            -f base='main' --jq '.number')"
           echo "---${pr_number}---"
           echo "end"
