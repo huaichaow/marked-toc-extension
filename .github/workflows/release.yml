@@ -16,9 +16,10 @@ jobs:
       pull-requests: write # to be able to comment on released pull requests
       id-token: write # to enable use of OIDC for npm provenance
     steps:
-      - name: check x ${github.ref} ${github.event_name} ${github}
+      - name: check x ${{ github.ref }} ${{ github.event_name }} ${{ github }}
         if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/mainxxxx'
         run:
+          echo "${{ github.ref }} ${{ github.event_name }} ${{ github }}"
           exit 1
 
       - name: Checkout
