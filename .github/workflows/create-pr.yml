@@ -31,7 +31,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pr_number="$(gh api \
+          gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -39,6 +39,15 @@ jobs:
             -f title='Amazing new feature' \
             -f body='Please pull these awesome changes in!' \
             -f head='release/main' \
-            -f base='main' --jq '.number')"
-          echo "---${pr_number}---"
-          echo "end"
+            -f base='main'
+#          pr_number="$(gh api \
+#            --method POST \
+#            -H "Accept: application/vnd.github+json" \
+#            -H "X-GitHub-Api-Version: 2022-11-28" \
+#            /repos/huaichaow/marked-toc-extension/pulls \
+#            -f title='Amazing new feature' \
+#            -f body='Please pull these awesome changes in!' \
+#            -f head='release/main' \
+#            -f base='main' --jq '.number')"
+#          echo "---${pr_number}---"
+#          echo "end"
