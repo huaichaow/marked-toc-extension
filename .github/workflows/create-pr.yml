@@ -41,3 +41,4 @@ jobs:
             -f head='release/main' \
             -f base='main' | jq '.number')
           echo "---${pr_number}---"
+          echo "end"
