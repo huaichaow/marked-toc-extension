@@ -1,5 +1,5 @@
 name: Bump Version
-run-name: ${{ github.actor }} is bumping new version
+run-name: ${{ github.actor }} is bumping new version on ${{ github.ref_name }}
 on: [ workflow_dispatch ]
 
 permissions:
