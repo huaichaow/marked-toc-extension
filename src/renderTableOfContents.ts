@@ -17,10 +17,10 @@ function fixHeadingDepth(headings: Headings): Headings {
 }
 
 function createHeadingIdFactory(options: RenderTableOfContentsOptions) {
-  const { headerPrefix, headerIds, slugger } = options;
+  const { generateHeaderId, headerIdPrefix, slugger } = options;
 
-  return headerIds && slugger
-    ? (heading: Heading) => headerPrefix + slugger.slug(heading.text)
+  return generateHeaderId && slugger
+    ? (heading: Heading) => headerIdPrefix + slugger.slug(heading.text)
     : () => null;
 }
 

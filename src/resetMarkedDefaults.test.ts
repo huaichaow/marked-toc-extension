@@ -6,8 +6,11 @@ describe('marked-toc-extension', () => {
   test('should work normally without toc', () => {
     marked.use({
       hooks: {
-        preprocess(markdown: string) {
+        preprocess(markdown) {
           return markdown;
+        },
+        postprocess(html) {
+          return html;
         }
       },
     });

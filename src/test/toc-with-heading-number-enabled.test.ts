@@ -3,7 +3,7 @@ import { marked } from 'marked';
 import markedToc from '..';
 import { testMarkedOutput } from '../testHelper';
 
-marked.use(markedToc({ renderChapterNumber: true }));
+marked.use(markedToc({ renderChapterNumber: true, generateHeaderId: true }));
 
 describe('marked-toc-extension', () => {
   test('should work normally without toc', () => {

@@ -1,5 +1,5 @@
-import { marked, Parser, Renderer, Slugger } from 'marked';
-import Token = marked.Token;
+import { marked, Parser, Renderer, Token, Tokens } from 'marked';
+import GithubSlugger from 'github-slugger';
 import {
   Heading,
   HeadingWithChapterNumber,
@@ -8,12 +8,19 @@ import {
 import { renderTableOfContent } from './renderTableOfContents';
 import { fixHeadingDepthFactory } from './fixHeadingDepthFactory';
 import { numberingHeadingFactory } from './numberingHeadingFactory';
-import MarkedOptions = marked.MarkedOptions;
+
 
 export default function markedTableOfContentsExtension(
   options?: MarkedTableOfContentsExtensionOptions,
 ) {
-  const { className, renderChapterNumber, classNamePrefix } = options || {};
+  const {
+    className,
+    renderChapterNumber,
+    classNamePrefix,
+    generateHeaderId,
+    headerIdPrefix = '',
+  } = options || {};
+  const slugger = new GithubSlugger();
 
   let headings: Array<{ text: string; depth: number }> = [];
   let fixHeadingDepth: ((heading: Heading) => void) | null = null;
@@ -24,23 +31,27 @@ export default function markedTableOfContentsExtension(
 
   const walkTokens = (token: Token) => {
     const { type } = token;
-    if (type === 'heading') {
-      fixHeadingDepth?.(token);
-      numberingHeading?.(token);
+    if (type === 'heading' && 'depth' in token && 'text' in token) {
+      fixHeadingDepth?.(token as Tokens.Heading);
+      numberingHeading?.(token as Tokens.Heading);
       chapterNumbers.push((token as unknown as HeadingWithChapterNumber).chapterNumberHeading);
-      headings.push(token);
+      headings.push(token as Tokens.Heading);
     }
   };
 
-  function renderToc(markedOption: MarkedOptions) {
+  function renderToc() {
     if (headings.length && !tocCache) {
-      const { headerPrefix, headerIds } = markedOption;
       tocCache = renderTableOfContent(headings, {
         className,
         classNamePrefix,
-        headerIds,
-        headerPrefix,
-        slugger: new Slugger(),
+        generateHeaderId,
+        headerIdPrefix,
+        /**
+         * use a new slugger as GithubSlugger remembers the tokens processed
+         * when rendering headings in the custom renderer function 'heading',
+         * and a number is appended to remove duplication which is not wanted.
+         */
+        slugger: new GithubSlugger(),
       }) + '\n';
     }
   }
@@ -61,7 +72,7 @@ export default function markedTableOfContentsExtension(
       }
     },
     renderer(this: { parser: Parser }) {
-      renderToc(this.parser.options);
+      renderToc();
       return tocCache;
     }
   };
@@ -70,26 +81,25 @@ export default function markedTableOfContentsExtension(
     heading(
       this: Renderer,
       text: string,
-      level: 1 | 2 | 3 | 4 | 5 | 6,
-      raw: string,
-      slugger: Slugger,
+      level: number,
     ) {
-      const chapterNumber = chapterNumbers.shift();
-
-      const id = this.options.headerIds
-        ? this.options.headerPrefix + slugger.slug(text)
-        : null;
+      const chapterNumber = renderChapterNumber ? chapterNumbers.shift() : null;
+      const id = generateHeaderId ? `${headerIdPrefix}${slugger.slug(text)}` : null;
 
       const idAttr = id ? ` id="${id}"` : '';
+      const chapterNumberText = chapterNumber ? `${chapterNumber} ` : '';
 
-      return `<h${level}${idAttr}>${chapterNumber} ${text}</h${level}>\n`;
+      return `<h${level}${idAttr}>${chapterNumberText}${text}</h${level}>\n`;
     }
   };
 
   function init() {
+    slugger.reset();
+
     if (!fixHeadingDepth) {
       fixHeadingDepth = fixHeadingDepthFactory();
     }
+
     if (!numberingHeading && renderChapterNumber) {
       numberingHeading = numberingHeadingFactory(
         renderChapterNumber === true
@@ -122,6 +132,9 @@ export default function markedTableOfContentsExtension(
     hooks,
     extensions: [tableOfContentsExtension],
     walkTokens,
-    renderer: renderChapterNumber ? rendererHeadingWithChapterNumber : undefined,
+    renderer: renderChapterNumber || generateHeaderId
+      ? rendererHeadingWithChapterNumber
+      : undefined,
   };
 }
+marked.use({ renderer: markedTableOfContentsExtension().renderer });
