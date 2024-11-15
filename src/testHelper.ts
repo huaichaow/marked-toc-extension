@@ -14,6 +14,7 @@ export function compactHtml(html: string) {
 }
 
 export function testMarkedOutput(md: string, received: string) {
-  expect(compactHtml(marked.parse(fixMarkdownText(md))))
-    .toEqual(compactHtml(received));
+  expect(
+    compactHtml(marked.parse(fixMarkdownText(md), { async: false }))
+  ).toEqual(compactHtml(received));
 }
