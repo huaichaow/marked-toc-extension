@@ -1,4 +1,4 @@
-import { Parser, Renderer, Token, Tokens } from 'marked';
+import { Token, Tokens } from 'marked';
 import GithubSlugger from 'github-slugger';
 import {
   Heading,
@@ -73,15 +73,15 @@ export default function markedTableOfContentsExtension(
         };
       }
     },
-    renderer(this: { parser: Parser }) {
+    renderer<T>(this: { parser: T }) {
       renderToc();
       return tocCache;
     },
   };
 
   const rendererHeadingWithChapterNumber = {
-    heading(
-      this: Renderer,
+    heading<T>(
+      this: T,
       {
         text,
         depth,
