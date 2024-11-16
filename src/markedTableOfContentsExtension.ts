@@ -1,4 +1,4 @@
-import { marked, Parser, Renderer, Token, Tokens } from 'marked';
+import { Parser, Renderer, Token, Tokens } from 'marked';
 import GithubSlugger from 'github-slugger';
 import {
   Heading,
@@ -145,4 +145,3 @@ export default function markedTableOfContentsExtension(
         : undefined,
   };
 }
-marked.use({ renderer: markedTableOfContentsExtension().renderer });
