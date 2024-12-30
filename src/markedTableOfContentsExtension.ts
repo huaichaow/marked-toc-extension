@@ -1,4 +1,4 @@
-import { Token, Tokens } from 'marked';
+import { Token, Tokens } from '@huaichao.wang/marked';
 import GithubSlugger from 'github-slugger';
 import {
   Heading,

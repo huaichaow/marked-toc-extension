@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { marked } from '@huaichao.wang/marked';
 
 const defaults = marked.defaults;
 

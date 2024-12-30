@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { marked } from '@huaichao.wang/marked';
 import savedDefaults = marked.defaults;
 import { resetMarkedDefaults } from './resetMarkedDefaults';
 

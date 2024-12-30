@@ -8,7 +8,7 @@ marked Table of Contents Extension.
 # usage
 
 ```
-import { marked } from 'marked';
+import { marked } from '@huaichao.wang/marked';
 import tocExtension from 'markdown-toc-extension';
 ```
 

@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { marked } from '@huaichao.wang/marked';
 import markedToc from '..';
 import { testMarkedOutput } from '../testHelper';
 

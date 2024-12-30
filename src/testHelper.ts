@@ -1,5 +1,5 @@
 import { Headings } from './types';
-import { marked } from 'marked';
+import { marked } from '@huaichao.wang/marked';
 
 export function createHeadings(depths: Array<number>): Headings {
   return depths.map((depth) => ({ text: `heading ${depth}`, depth }));
