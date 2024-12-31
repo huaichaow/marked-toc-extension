@@ -18,9 +18,9 @@ jobs:
       id-token: write # to enable use of OIDC for npm provenance
     steps:
       - name: Ensure the branch is 'main'
-        if: github.ref_name != 'main'
+        if: github.ref_name != 'main' && !startsWith(github.ref_name, 'customized')
         run: |
-          echo "release can only run on branch main"
+          echo "release can only run on branch main or customized/*"
           exit 1
 
       - name: Checkout
