@@ -1,4 +1,4 @@
-import { Token, Tokens } from 'marked';
+import { Parser, Renderer, Token, Tokens } from 'marked';
 import GithubSlugger from 'github-slugger';
 import {
   Heading,
@@ -21,7 +21,7 @@ export default function markedTableOfContentsExtension(
   } = options || {};
   const slugger = new GithubSlugger();
 
-  let headings: Array<{ text: string; depth: number }> = [];
+  let headings: Tokens.Heading[] = [];
   let fixHeadingDepth: ((heading: Heading) => void) | null = null;
   let numberingHeading: ((heading: Heading) => void) | null = null;
   // save for use in `rendererHeadingWithChapterNumber`
@@ -40,8 +40,11 @@ export default function markedTableOfContentsExtension(
     }
   };
 
-  function renderToc() {
+  function renderToc(parser: Parser) {
     if (headings.length && !tocCache) {
+      headings.forEach((heading) => {
+        heading.text = parser.parseInline(heading.tokens);
+      });
       tocCache =
         renderTableOfContent(headings, {
           className,
@@ -73,23 +76,16 @@ export default function markedTableOfContentsExtension(
         };
       }
     },
-    renderer<T>(this: { parser: T }) {
-      renderToc();
+    renderer(this: { parser: Parser }) {
+      renderToc(this.parser);
       return tocCache;
     },
   };
 
   const rendererHeadingWithChapterNumber = {
-    heading<T>(
-      this: T,
-      {
-        text,
-        depth,
-      }: {
-        text: string;
-        depth: number;
-      }
-    ) {
+    heading(this: Renderer, { tokens, depth }: Tokens.Heading) {
+      const text = this.parser.parseInline(tokens);
+
       const chapterNumber = renderChapterNumber ? chapterNumbers.shift() : null;
       const id = generateHeaderId
         ? `${headerIdPrefix}${slugger.slug(text)}`
