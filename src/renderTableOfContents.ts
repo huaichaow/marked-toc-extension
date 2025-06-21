@@ -43,7 +43,7 @@ function renderTreeStructureHeadings(
     const headingId = createHeadingId(heading);
     const text = chapterNumber === undefined
       ? heading.text
-      : `${chapterNumber} ${heading.text}`;
+      : `${chapterNumber}${heading.text}`;
 
     tokens.push(...createItem(text, headingId));
   }

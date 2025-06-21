@@ -92,7 +92,7 @@ export default function markedTableOfContentsExtension(
         : null;
 
       const idAttr = id ? ` id="${id}"` : '';
-      const chapterNumberText = chapterNumber ? `${chapterNumber} ` : '';
+      const chapterNumberText = chapterNumber ? `${chapterNumber}` : '';
 
       return `<h${depth}${idAttr}>${chapterNumberText}${text}</h${depth}>\n`;
     },

@@ -5,7 +5,7 @@ import { testMarkedOutput } from '../testHelper';
 marked.use(markedToc({
   className: 'toc',
   classNamePrefix: 'x-',
-  renderChapterNumber: (numbers, kind) => numbers.join(kind === 'toc' ? '--' : '++'),
+  renderChapterNumber: (numbers, kind) => `${numbers.join(kind === 'toc' ? '--' : '++')} `,
   generateHeaderId: true,
 }));
 

@@ -2,6 +2,8 @@ import { Heading, HeadingWithChapterNumber } from './types';
 import { numberingHeadingFactory } from './numberingHeadingFactory';
 import { createHeadings } from './testHelper';
 
+const SPACE = ' ';
+
 let numberingHeading: (heading: Heading) => void;
 
 const testDataSet = [
@@ -40,10 +42,14 @@ describe('numberingHeadingFactory', () => {
       headings.forEach((heading) => numberingHeading(heading));
 
       chapterNumbers.forEach((expectedDepth, i) => {
-        expect((headings[i] as HeadingWithChapterNumber).chapterNumberTOC).toBe(expectedDepth);
-        expect((headings[i] as HeadingWithChapterNumber).chapterNumberHeading).toBe(expectedDepth);
+        expect((headings[i] as HeadingWithChapterNumber).chapterNumberTOC).toBe(
+          expectedDepth + SPACE
+        );
+        expect(
+          (headings[i] as HeadingWithChapterNumber).chapterNumberHeading
+        ).toBe(expectedDepth + SPACE);
       });
-    },
+    }
   );
 
   test.each(testDataSet)(
@@ -52,17 +58,20 @@ describe('numberingHeadingFactory', () => {
       const headings = createHeadings(receivedDepths);
 
       numberingHeading = numberingHeadingFactory(
-        (numbers: Array<number>, kind) => numbers.join(kind === 'toc' ? '-' : '|'),
+        (numbers: Array<number>, kind) =>
+          numbers.join(kind === 'toc' ? '-' : '|')
       );
 
       headings.forEach((heading) => numberingHeading(heading));
 
       chapterNumbers.forEach((expectedDepth, i) => {
-        expect((headings[i] as HeadingWithChapterNumber).chapterNumberTOC)
-          .toBe(expectedDepth.replace(/\./g, '-'));
-        expect((headings[i] as HeadingWithChapterNumber).chapterNumberHeading)
-          .toBe(expectedDepth.replace(/\./g, '|'));
+        expect((headings[i] as HeadingWithChapterNumber).chapterNumberTOC).toBe(
+          expectedDepth.replace(/\./g, '-')
+        );
+        expect(
+          (headings[i] as HeadingWithChapterNumber).chapterNumberHeading
+        ).toBe(expectedDepth.replace(/\./g, '|'));
       });
-    },
+    }
   );
 });
