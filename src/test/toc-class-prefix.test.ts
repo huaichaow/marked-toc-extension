@@ -22,15 +22,17 @@ describe('marked-toc-extension with options', () => {
       <h1 id="a">1 a</h1>
       <h2 id="b">1++1 b</h2>
       <h3 id="c">1++1++1 c</h3>
-      <ul class="x-list toc">
-        <li class="x-item"><a href="#a">1 a</a></li>
+      <nav class="toc">
         <ul class="x-list">
-            <li class="x-item"><a href="#b">1--1 b</a></li>
-            <ul class="x-list">
-                <li class="x-item"><a href="#c">1--1--1 c</a></li>
-            </ul>
+          <li class="x-item"><a href="#a">1 a</a></li>
+          <ul class="x-list">
+              <li class="x-item"><a href="#b">1--1 b</a></li>
+              <ul class="x-list">
+                  <li class="x-item"><a href="#c">1--1--1 c</a></li>
+              </ul>
+          </ul>
         </ul>
-      </ul>
+      </nav>
       `;
 
     testMarkedOutput(md, expectedHtml);

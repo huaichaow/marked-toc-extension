@@ -48,6 +48,11 @@ export type MarkedTableOfContentsExtensionOptions = {
    * the prefix to add to heading ids, used to avoid id collision with other ids already on pages.
    */
   headerIdPrefix?: string;
+
+  /**
+   * the title to add to the TOC
+   */
+  tocTitle?: string;
 };
 
 type Slugger = {
@@ -55,7 +60,6 @@ type Slugger = {
 };
 
 export type RenderTableOfContentsOptions = {
-  className?: string;
   classNamePrefix?: string;
   generateHeaderId?: boolean;
   headerIdPrefix?: string;

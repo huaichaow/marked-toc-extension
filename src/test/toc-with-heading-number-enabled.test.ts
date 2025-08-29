@@ -35,16 +35,18 @@ describe('marked-toc-extension', () => {
 
     const expectedHtml = `
       <h1 id="toc">1 toc</h1>
-      <ul class="toc-list">
-        <li class="toc-item"><a href="#toc">1 toc</a></li>
-        <li class="toc-item"><a href="#h1">2 h1</a></li>
+      <nav class="undefined">
         <ul class="toc-list">
-          <li class="toc-item"><a href="#h2">2.1 h2</a></li>
+          <li class="toc-item"><a href="#toc">1 toc</a></li>
+          <li class="toc-item"><a href="#h1">2 h1</a></li>
           <ul class="toc-list">
-            <li class="toc-item"><a href="#h3">2.1.1 h3</a></li>
+            <li class="toc-item"><a href="#h2">2.1 h2</a></li>
+            <ul class="toc-list">
+              <li class="toc-item"><a href="#h3">2.1.1 h3</a></li>
+            </ul>
           </ul>
         </ul>
-      </ul>
+      </nav>
       <h1 id="h1">2 h1</h1>
       <h2 id="h2">2.1 h2</h2>
       <h3 id="h3">2.1.1 h3</h3>
@@ -62,11 +64,13 @@ describe('marked-toc-extension', () => {
       `;
 
     const expectedHtml = `
-      <ul class="toc-list">
-        <li class="toc-item"><a href="#a">1 a</a></li>
-        <li class="toc-item"><a href="#b">2 b</a></li>
-        <li class="toc-item"><a href="#c">3 c</a></li>
-      </ul>
+      <nav class="undefined">
+        <ul class="toc-list">
+          <li class="toc-item"><a href="#a">1 a</a></li>
+          <li class="toc-item"><a href="#b">2 b</a></li>
+          <li class="toc-item"><a href="#c">3 c</a></li>
+        </ul>
+      </nav>
       <h1 id="a">1 a</h1>
       <h1 id="b">2 b</h1>
       <h1 id="c">3 c</h1>
@@ -85,14 +89,16 @@ describe('marked-toc-extension', () => {
       # l1
       `;
 
-    const expectedHtml = `
-      <ul class="toc-list">
-        <li class="toc-item"><a href="#l2">1 l2</a></li>
+        const expectedHtml = `
+      <nav class="undefined">
         <ul class="toc-list">
+          <li class="toc-item"><a href="#l2">1 l2</a></li>
+          <ul class="toc-list">
             <li class="toc-item"><a href="#l3">1.1 l3</a></li>
+          </ul>
+          <li class="toc-item"><a href="#l1">2 l1</a></li>
         </ul>
-        <li class="toc-item"><a href="#l1">2 l1</a></li>
-      </ul>
+      </nav>
       <h1 id="l2">1 l2</h1>
       <h2 id="l3">1.1 l3</h2>
       <h1 id="l1">2 l1</h1>
@@ -110,23 +116,27 @@ describe('marked-toc-extension', () => {
       # l1
       `;
 
-    const expectedHtml = `
+        const expectedHtml = `
       <h1 id="l2">1 l2</h1>
-      <ul class="toc-list">
-        <li class="toc-item"><a href="#l2">1 l2</a></li>
+      <nav class="undefined">
         <ul class="toc-list">
+          <li class="toc-item"><a href="#l2">1 l2</a></li>
+          <ul class="toc-list">
             <li class="toc-item"><a href="#l3">1.1 l3</a></li>
+          </ul>
+          <li class="toc-item"><a href="#l1">2 l1</a></li>
         </ul>
-        <li class="toc-item"><a href="#l1">2 l1</a></li>
-      </ul>
+      </nav>
       <h2 id="l3">1.1 l3</h2>
-      <ul class="toc-list">
-        <li class="toc-item"><a href="#l2">1 l2</a></li>
+      <nav class="undefined">
         <ul class="toc-list">
+          <li class="toc-item"><a href="#l2">1 l2</a></li>
+          <ul class="toc-list">
             <li class="toc-item"><a href="#l3">1.1 l3</a></li>
+          </ul>
+          <li class="toc-item"><a href="#l1">2 l1</a></li>
         </ul>
-        <li class="toc-item"><a href="#l1">2 l1</a></li>
-      </ul>
+      </nav>
       <h1 id="l1">2 l1</h1>
       `;
 

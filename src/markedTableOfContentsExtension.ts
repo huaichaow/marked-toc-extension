@@ -18,6 +18,7 @@ export default function markedTableOfContentsExtension(
     classNamePrefix,
     generateHeaderId,
     headerIdPrefix = '',
+    tocTitle,
   } = options || {};
   const slugger = new GithubSlugger();
 
@@ -47,7 +48,6 @@ export default function markedTableOfContentsExtension(
       });
       tocCache =
         renderTableOfContent(headings, {
-          className,
           classNamePrefix,
           generateHeaderId,
           headerIdPrefix,
@@ -78,7 +78,8 @@ export default function markedTableOfContentsExtension(
     },
     renderer(this: { parser: Parser }) {
       renderToc(this.parser);
-      return tocCache;
+      const title = tocTitle ? `<h2 class="toc-title">${tocTitle}</h2>` : '';
+      return `<nav class="${className}">${title}${tocCache}</nav>`;
     },
   };
 

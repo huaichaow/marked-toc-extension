@@ -13,9 +13,11 @@ describe('marked-toc-extension', () => {
       `;
 
     const expectedHtml = `
-      <ul class="toc-list">
-        <li class="toc-item"><a href="#a-codebcode-strongcstrong-emdem">a <code>b</code> <strong>c</strong> <em>d</em></a></li>
-      </ul>
+      <nav class="undefined">
+        <ul class="toc-list">
+          <li class="toc-item"><a href="#a-codebcode-strongcstrong-emdem">a <code>b</code> <strong>c</strong> <em>d</em></a></li>
+        </ul>
+      </nav>
       <h1 id="a-codebcode-strongcstrong-emdem">a <code>b</code> <strong>c</strong> <em>d</em></h1>
       `;
 

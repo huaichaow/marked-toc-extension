@@ -28,13 +28,11 @@ function renderTreeStructureHeadings(
   headings: Headings,
   options: RenderTableOfContentsOptions,
 ): string {
-  const { className, classNamePrefix = 'toc-' } = options;
+  const { classNamePrefix = 'toc-' } = options;
 
   const tocListClass = `${classNamePrefix}${TOC_LIST_CLASS}`;
   const tocItemClass = `${classNamePrefix}${TOC_ITEM_CLASS}`;
   const tokens: Array<string> = [];
-
-  let outermost = true;
 
   const createHeadingId = createHeadingIdFactory(options);
 
@@ -58,11 +56,6 @@ function renderTreeStructureHeadings(
 
   function openLevel() {
     const classNames = [tocListClass];
-
-    if (outermost && className) {
-      outermost = false;
-      classNames.push(className);
-    }
 
     tokens.push(`<ul class="${classNames.join(SPACE)}">`);
   }
