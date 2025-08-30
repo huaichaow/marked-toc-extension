@@ -1,6 +1,6 @@
 {
   "name": "marked-toc-extension",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Table of Contents extension for marked",
   "main": "lib/marked-toc-extension.js",
   "module": "lib/marked-toc-extension.esm.js",
