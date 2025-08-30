@@ -9,6 +9,10 @@ import { renderTableOfContent } from './renderTableOfContents';
 import { fixHeadingDepthFactory } from './fixHeadingDepthFactory';
 import { numberingHeadingFactory } from './numberingHeadingFactory';
 
+function getTocTitle(tocTitle: string | (() => string) | undefined) {
+  return typeof tocTitle === 'function' ? tocTitle() : tocTitle;
+}
+
 export default function markedTableOfContentsExtension(
   options?: MarkedTableOfContentsExtensionOptions
 ) {
@@ -78,8 +82,9 @@ export default function markedTableOfContentsExtension(
     },
     renderer(this: { parser: Parser }) {
       renderToc(this.parser);
-      const title = tocTitle ? `<h2 class="toc-title">${tocTitle}</h2>` : '';
-      return `<nav class="${className}">${title}${tocCache}</nav>`;
+      const title = getTocTitle(tocTitle);
+      const titleElement = title ? `<h2 class="toc-title">${title}</h2>` : '';
+      return `<nav class="${className}">${titleElement}${tocCache}</nav>`;
     },
   };
 

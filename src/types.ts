@@ -52,7 +52,7 @@ export type MarkedTableOfContentsExtensionOptions = {
   /**
    * the title to add to the TOC
    */
-  tocTitle?: string;
+  tocTitle?: string | (() => string);
 };
 
 type Slugger = {
