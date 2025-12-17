@@ -23,11 +23,19 @@
     "table of contents"
   ],
   "author": "Huaichao Wang(huaichao.wang@qq.com)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huaichaow/marked-toc-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/huaichaow/marked-toc-extension/issues"
+  },
+  "homepage": "https://github.com/huaichaow/marked-toc-extension#readme",
   "license": "ISC",
   "devDependencies": {
     "@commitlint/cli": "^17.4.2",
     "@commitlint/config-conventional": "^17.4.2",
-    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/git": "github:semantic-release/git",
     "@types/jest": "^29.4.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
@@ -35,7 +43,7 @@
     "husky": "^8.0.3",
     "rollup": "^3.14.0",
     "rollup-plugin-ts": "^3.2.0",
-    "semantic-release": "^21.1.1",
+    "semantic-release": "^25.0.2",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
