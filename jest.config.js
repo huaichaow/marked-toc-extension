@@ -7,5 +7,5 @@ module.exports = {
       'ts-jest',
     ],
   },
-  transformIgnorePatterns: ['/node_modules/(?!(github-slugger)/)'],
+  transformIgnorePatterns: ['/node_modules/(?!(github-slugger|marked)/)'],
 };
