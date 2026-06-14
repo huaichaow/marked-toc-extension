@@ -24,6 +24,16 @@ describe('marked-toc-extension', () => {
     testMarkedOutput(md, expectedHtml);
   });
 
+  test('should render empty nav when toc has no headings', () => {
+    const md = `[TOC]`;
+
+    const expectedHtml = `
+      <nav class="undefined"></nav>
+      `;
+
+    testMarkedOutput(md, expectedHtml);
+  });
+
   test('should render toc', () => {
     const md = `
       # toc

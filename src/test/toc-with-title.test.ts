@@ -3,6 +3,27 @@ import markedToc from '..';
 import { testMarkedOutput } from '../testHelper';
 
 describe('marked-toc-extension with options', () => {
+  test('should render title without list when toc has no headings', () => {
+    const tocTitle = 'Table of Contents';
+
+    const md = `[TOC]`;
+
+    const expectedHtml = `
+      <nav class="toc">
+        <h2 class="toc-title">${tocTitle}</h2>
+      </nav>
+      `;
+
+    const marked = new Marked(
+      markedToc({
+        className: 'toc',
+        tocTitle,
+      })
+    );
+
+    testMarkedOutput(md, expectedHtml, marked);
+  });
+
   test('should render custom chapter numbers', () => {
     const tocTitle = 'Table of Contents';
 

@@ -84,7 +84,7 @@ export default function markedTableOfContentsExtension(
       renderToc(this.parser);
       const title = getTocTitle(tocTitle);
       const titleElement = title ? `<h2 class="toc-title">${title}</h2>` : '';
-      return `<nav class="${className}">${titleElement}${tocCache}</nav>`;
+      return `<nav class="${className}">${titleElement}${tocCache ?? ''}</nav>`;
     },
   };
 
