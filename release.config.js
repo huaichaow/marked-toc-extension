@@ -3,7 +3,12 @@ module.exports = {
   // Ensure semantic-release can always resolve the GitHub owner/repo correctly in CI.
   repositoryUrl: 'https://github.com/huaichaow/marked-toc-extension.git',
   plugins: [
-    '@semantic-release/commit-analyzer',
+    [
+      '@semantic-release/commit-analyzer',
+      {
+        releaseRules: [{ type: 'refactor', release: 'patch' }],
+      },
+    ],
     '@semantic-release/release-notes-generator',
     [
       '@semantic-release/npm',
